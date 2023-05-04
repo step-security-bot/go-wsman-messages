@@ -49,12 +49,17 @@ type AddTrustedRootCertificate_INPUT struct {
 	CertificateBlob string   `xml:"h:CertificateBlob"`
 }
 
+type AddKeyParameters struct {
+	XMLName xml.Name `xml:"h:AddKey_INPUT"`
+	KeyBlob []byte   `xml:"h:KeyBlob"`
+}
 type GenerateKeyPair_INPUT struct {
 	XMLName      xml.Name     `xml:"h:GenerateKeyPair_INPUT"`
 	H            string       `xml:"xmlns:h,attr"`
 	KeyAlgorithm KeyAlgorithm `xml:"h:KeyAlgorithm"`
 	KeyLength    KeyLength    `xml:"h:KeyLength"`
 }
+
 type KeyAlgorithm int
 
 const (
@@ -131,10 +136,6 @@ func (p ManagementService) GeneratePKCS10RequestEx(pkcs10Request PKCS10Request) 
 	body := p.base.WSManMessageCreator.CreateBody("GeneratePKCS10RequestEx_INPUT", AMT_PublicKeyManagementService, &pkcs10Request)
 
 	return p.base.WSManMessageCreator.CreateXML(header, body)
-}
-
-type AddKeyParameters struct {
-	KeyBlob []byte `xml:"h:KeyBlob"`
 }
 
 func (p ManagementService) AddKey(keyBlob []byte) string {
