@@ -12,7 +12,7 @@ import (
 	"github.com/open-amt-cloud-toolkit/go-wsman-messages/pkg/cim/models"
 )
 
-type AMTMessage struct {
+type Response struct {
 	XMLName xml.Name     `xml:"Envelope"`
 	Header  wsman.Header `xml:"Header"`
 	Body    Body         `xml:"Body"`
@@ -82,10 +82,6 @@ const (
 	Disabled FeatureEnabled = iota
 	Enabled
 )
-
-type Response struct {
-	AMT_GeneralSettings Settings
-}
 
 type Settings struct {
 	base wsman.Base

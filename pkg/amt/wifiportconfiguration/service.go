@@ -167,8 +167,10 @@ func (s Service) AddWiFiSettings(wifiEndpointSettings models.WiFiEndpointSetting
 		},
 		WiFiEndpointSettings: wifiEndpointSettings,
 	}
+	input.WiFiEndpointSettings.H = "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_WiFiEndpointSettings"
 	if ieee8021xSettingsInput != nil {
 		input.IEEE8021xSettings = ieee8021xSettingsInput
+		input.IEEE8021xSettings.H = "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_IEEE8021xSettings"
 		input.CACredential = &CACredential{
 			Address: "default",
 			ReferenceParameters: models.ReferenceParameters{

@@ -10,10 +10,34 @@ import (
 
 	"github.com/open-amt-cloud-toolkit/go-wsman-messages/internal/wsman"
 	"github.com/open-amt-cloud-toolkit/go-wsman-messages/pkg/amt/actions"
+	"github.com/open-amt-cloud-toolkit/go-wsman-messages/pkg/cim/models"
 )
 
 const AMT_PublicKeyManagementService = "AMT_PublicKeyManagementService"
 
+type Response struct {
+	XMLName xml.Name     `xml:"Envelope"`
+	Header  wsman.Header `xml:"Header"`
+	Body    Body         `xml:"Body"`
+}
+type Body struct {
+	XMLName                          xml.Name                     `xml:"Body"`
+	AddTrustedRootCertificate_OUTPUT AddTrustedCertificate_OUTPUT `xml:"AddTrustedRootCertificate_OUTPUT,omitempty"`
+	AddTrustedCertificate_OUTPUT     AddTrustedCertificate_OUTPUT `xml:"AddCertificate_OUTPUT,omitempty"`
+}
+type AddTrustedCertificate_OUTPUT struct {
+	CreatedCertificate CreatedCertificate
+	ReturnValue        int
+}
+type AddTrustedRootCertificate_OUTPUT struct {
+	CreatedCertificate CreatedCertificate
+	ReturnValue        int
+}
+type CreatedCertificate struct {
+	XMLName             xml.Name                          `xml:"CreatedCertificate"`
+	Address             string                            `xml:"Address,omitempty"`
+	ReferenceParameters models.ReferenceParameters_OUTPUT `xml:"ReferenceParameters,omitempty"`
+}
 type AddCertificate_INPUT struct {
 	XMLName         xml.Name `xml:"h:AddCertificate_INPUT"`
 	H               string   `xml:"xmlns:h,attr"`
@@ -105,6 +129,20 @@ func (p ManagementService) GenerateKeyPair(keyPairParameters GenerateKeyPair_INP
 func (p ManagementService) GeneratePKCS10RequestEx(pkcs10Request PKCS10Request) string {
 	header := p.base.WSManMessageCreator.CreateHeader(string(actions.GeneratePKCS10RequestEx), AMT_PublicKeyManagementService, nil, "", "")
 	body := p.base.WSManMessageCreator.CreateBody("GeneratePKCS10RequestEx_INPUT", AMT_PublicKeyManagementService, &pkcs10Request)
+
+	return p.base.WSManMessageCreator.CreateXML(header, body)
+}
+
+type AddKeyParameters struct {
+	KeyBlob []byte `xml:"h:KeyBlob"`
+}
+
+func (p ManagementService) AddKey(keyBlob []byte) string {
+	header := p.base.WSManMessageCreator.CreateHeader(string(actions.AddKey), AMT_PublicKeyManagementService, nil, "", "")
+	params := &AddKeyParameters{
+		KeyBlob: keyBlob,
+	}
+	body := p.base.WSManMessageCreator.CreateBody("AddKey_INPUT", AMT_PublicKeyManagementService, params)
 
 	return p.base.WSManMessageCreator.CreateXML(header, body)
 }
