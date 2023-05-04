@@ -147,7 +147,7 @@ func (s Service) Put(wiFiPortConfigurationService WiFiPortConfigurationService) 
 }
 
 // AddWiFiSettings atomically creates instances and associates them based on the input parameters.
-func (s Service) AddWiFiSettings(wifiEndpointSettings models.WiFiEndpointSettings, selector wsman.Selector, ieee8021xSettingsInput *models.IEEE8021xSettings, clientCredential, caCredential string) string {
+func (s Service) AddWiFiSettings(wifiEndpointSettings models.WiFiEndpointSettings, ieee8021xSettingsInput *models.IEEE8021xSettings, wifiEndpoint, clientCredential, caCredential string) string {
 	header := s.base.WSManMessageCreator.CreateHeader(string(actions.AddWiFiSettings), AMT_WiFiPortConfigurationService, nil, "", "")
 
 	input := AddWiFiSettings_INPUT{
@@ -155,7 +155,14 @@ func (s Service) AddWiFiSettings(wifiEndpointSettings models.WiFiEndpointSetting
 			Address: "/wsman",
 			ReferenceParameters: models.ReferenceParameters{
 				ResourceURI: "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/" + wifi.CIM_WiFiEndpoint,
-				SelectorSet: models.SelectorSet{Selector: []wsman.Selector{selector}},
+				SelectorSet: models.SelectorSet{
+					Selector: []wsman.Selector{
+						{
+							Name:  "Name",
+							Value: wifiEndpoint,
+						},
+					},
+				},
 			},
 		},
 		WiFiEndpointSettings: wifiEndpointSettings,
