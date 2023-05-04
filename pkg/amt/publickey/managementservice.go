@@ -24,17 +24,14 @@ type Body struct {
 	XMLName                          xml.Name                     `xml:"Body"`
 	AddTrustedRootCertificate_OUTPUT AddTrustedCertificate_OUTPUT `xml:"AddTrustedRootCertificate_OUTPUT,omitempty"`
 	AddTrustedCertificate_OUTPUT     AddTrustedCertificate_OUTPUT `xml:"AddCertificate_OUTPUT,omitempty"`
+	AddKey_OUTPUT                    AddKey_OUTPUT                `xml:"AddKey_OUTPUT,omitempty"`
 }
 type AddTrustedCertificate_OUTPUT struct {
-	CreatedCertificate CreatedCertificate
+	CreatedCertificate CreatedCertificate `xml:"CreatedCertificate"`
 	ReturnValue        int
 }
-type AddTrustedRootCertificate_OUTPUT struct {
-	CreatedCertificate CreatedCertificate
-	ReturnValue        int
-}
+
 type CreatedCertificate struct {
-	XMLName             xml.Name                          `xml:"CreatedCertificate"`
 	Address             string                            `xml:"Address,omitempty"`
 	ReferenceParameters models.ReferenceParameters_OUTPUT `xml:"ReferenceParameters,omitempty"`
 }
@@ -48,9 +45,13 @@ type AddTrustedRootCertificate_INPUT struct {
 	H               string   `xml:"xmlns:h,attr"`
 	CertificateBlob string   `xml:"h:CertificateBlob"`
 }
-
-type AddKeyParameters struct {
+type AddKey_OUTPUT struct {
+	CreatedKey  CreatedCertificate `xml:"CreatedKey"`
+	ReturnValue int
+}
+type AddKey_INPUT struct {
 	XMLName xml.Name `xml:"h:AddKey_INPUT"`
+	H       string   `xml:"xmlns:h,attr"`
 	KeyBlob []byte   `xml:"h:KeyBlob"`
 }
 type GenerateKeyPair_INPUT struct {
@@ -140,7 +141,7 @@ func (p ManagementService) GeneratePKCS10RequestEx(pkcs10Request PKCS10Request) 
 
 func (p ManagementService) AddKey(keyBlob []byte) string {
 	header := p.base.WSManMessageCreator.CreateHeader(string(actions.AddKey), AMT_PublicKeyManagementService, nil, "", "")
-	params := &AddKeyParameters{
+	params := &AddKey_INPUT{
 		KeyBlob: keyBlob,
 	}
 	body := p.base.WSManMessageCreator.CreateBody("AddKey_INPUT", AMT_PublicKeyManagementService, params)
