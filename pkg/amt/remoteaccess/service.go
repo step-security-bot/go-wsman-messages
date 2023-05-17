@@ -52,9 +52,13 @@ func NewRemoteAccessService(wsmanMessageCreator *wsman.WSManMessageCreator) Serv
 func (RemoteAccessService Service) Get() string {
 	return RemoteAccessService.base.Get(nil)
 }
+
+// Enumerates the instances of this class
 func (RemoteAccessService Service) Enumerate() string {
 	return RemoteAccessService.base.Enumerate()
 }
+
+// Pulls instances of this class, following an Enumerate operation
 func (RemoteAccessService Service) Pull(enumerationContext string) string {
 	return RemoteAccessService.base.Pull(enumerationContext)
 }
@@ -64,6 +68,10 @@ func (r Service) AddMPS(mpServer MPServer) string {
 	return r.base.WSManMessageCreator.CreateXML(header, body)
 }
 
+// AddRemoteAccessPolicyRule adds a Remote Access policy to the Intel(R) AMT subsystem.
+// The policy defines an event that will trigger an establishment of a tunnel between AMT and a pre-configured MPS.
+// Creates an AMT_RemoteAccessPolicyRule instance and associates it to a given list of AMT_ManagementPresenceRemoteSAP instances with AMT_PolicySetAppliesToElement association instances.
+// Returns an XML string representing the WS-Management message to be sent to the Intel(R) AMT subsystem.
 func (r Service) AddRemoteAccessPolicyRule(remoteAccessPolicyRule RemoteAccessPolicyRule, selector wsman.Selector) string {
 	header := r.base.WSManMessageCreator.CreateHeader(string(actions.AddRemoteAccessPolicyRule), AMT_RemoteAccessService, nil, "", "")
 	body := fmt.Sprintf(`<Body><h:AddRemoteAccessPolicyRule_INPUT xmlns:h="%s%s"><h:Trigger>%d</h:Trigger><h:TunnelLifeTime>%d</h:TunnelLifeTime><h:ExtendedData>%s</h:ExtendedData><h:MpServer><Address xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing">http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</Address><ReferenceParameters xmlns="http://schemas.xmlsoap.org/ws/2004/08/addressing"><ResourceURI xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd">%s%s</ResourceURI><SelectorSet xmlns="http://schemas.dmtf.org/wbem/wsman/1/wsman.xsd"><Selector Name="%s">%s</Selector></SelectorSet></ReferenceParameters></h:MpServer></h:AddRemoteAccessPolicyRule_INPUT></Body>`, r.base.WSManMessageCreator.ResourceURIBase,
