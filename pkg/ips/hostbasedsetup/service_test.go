@@ -43,7 +43,7 @@ func TestIPS_HostBasedSetupService(t *testing.T) {
 
 			// AdminSetup
 			{"should create a valid IPS_HostBasedSetupService AdminSetup wsman message", "IPS_HostBasedSetupService", wsmantesting.ADMIN_SETUP, fmt.Sprintf(`<h:AdminSetup_INPUT xmlns:h="http://intel.com/wbem/wscim/1/ips-schema/1/IPS_HostBasedSetupService"><h:NetAdminPassEncryptionType>%d</h:NetAdminPassEncryptionType><h:NetworkAdminPassword>%s</h:NetworkAdminPassword><h:McNonce>%s</h:McNonce><h:SigningAlgorithm>%d</h:SigningAlgorithm><h:DigitalSignature>%s</h:DigitalSignature></h:AdminSetup_INPUT>`, wsmantesting.AdminPassEncryptionType, wsmantesting.AdminPassword, wsmantesting.MCNonce, wsmantesting.SigningAlgorithm, wsmantesting.DigitalSignature), func() string {
-				return elementUnderTest.AdminSetup(wsmantesting.AdminPassEncryptionType, wsmantesting.AdminPassword, wsmantesting.MCNonce, wsmantesting.SigningAlgorithm, wsmantesting.DigitalSignature)
+				return elementUnderTest.AdminSetup(wsmantesting.AdminPassEncryptionType, wsmantesting.DigestRealm, wsmantesting.AdminPassword, wsmantesting.MCNonce, wsmantesting.SigningAlgorithm, wsmantesting.DigitalSignature)
 			}},
 
 			// UpgradeToAdminSetup
